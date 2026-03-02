@@ -6,6 +6,11 @@ const getRandomCommand = ():DoorCommand =>{
     return { direction: dir, amount }
 }
 
+const getRandomCombination = (): DoorCommand[] => {
+    let commands = [];
+    for (let index = 0; index < 3; index++) commands.push(getRandomCommand());
+    return commands;
+}
 export const CombinationGenerator = {
-    getRandomCommand,
+    getRandomCombination,
 }

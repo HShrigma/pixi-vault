@@ -1,3 +1,5 @@
+import { DoorCommand } from "../utils/types/vaultRegistries";
+
 export class Combination{
     commands: DoorCommand[];
     currentIndex: number;

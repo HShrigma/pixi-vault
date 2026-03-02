@@ -23,7 +23,7 @@ export default class Game extends Scene {
 
     this.addChild(this.background, this.player);
     
-    Debug.log("Game Loaded", CombinationGenerator.getRandomCommand());
+    Debug.log("Game Loaded", CombinationGenerator.getRandomCombination());
   }
 
   async start() {
