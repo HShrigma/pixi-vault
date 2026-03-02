@@ -31,6 +31,12 @@ const parseCommands = (input: string, debug: boolean = false): DoorCommand[] | u
     return res;
 }
 
+const commandsToString = (commands: DoorCommand[]) => {
+    if(!commands) return;
+    return commands.map(command => `${command.amount} ${command.direction === DoorDirection.CW ? "CW" : "CCW"}`).join(", ");
+}
+
 export const CommandInterpreter = {
     parseCommands,
+    commandsToString
 }

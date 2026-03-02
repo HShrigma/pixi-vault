@@ -11,6 +11,7 @@ import { Vector2 } from "pixi-spine";
 import { Debug } from "../utils/debug";
 import { CCWButton } from "../prefabs/CCWButton";
 import { CWButton } from "../prefabs/CWButton";
+import { CommandInterpreter } from "../utils/commandInterpreter";
 
 export default class Game extends Scene {
     name = "Game";
@@ -40,7 +41,7 @@ export default class Game extends Scene {
 
         this.CWrotationButton.onPressed = (direction: DoorDirection) => processor.pushDirection(direction);
         this.CCWrotationButton.onPressed = (direction: DoorDirection) => processor.pushDirection(direction);
-        Debug.log("Combination:", combination);
+        Debug.log("Combination:", CommandInterpreter.commandsToString(combination));
     }
 
     async start() {
