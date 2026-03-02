@@ -5,32 +5,42 @@ import Scene from "../core/Scene";
 import SpineAnimation from "../core/SpineAnimation";
 import { VaultDoorProcessor } from "../helpers/VaultDoorProcessor";
 import { CombinationGenerator } from "../utils/combinationGenerator";
+import { RotationButton } from "../prefabs/RotationButton";
+import { DoorDirection } from "../utils/types/vaultRegistries";
+import { Vector2 } from "pixi-spine";
+import { Debug } from "../utils/debug";
+import { CCWButton } from "../prefabs/CCWButton";
+import { CWButton } from "../prefabs/CWButton";
 
 export default class Game extends Scene {
     name = "Game";
 
     private player!: Player;
     private background!: ParallaxBackground;
+    private CWrotationButton!: RotationButton;
+    private CCWrotationButton!: RotationButton;
 
     load() {
         this.background = new ParallaxBackground(config.backgrounds.forest);
         this.player = new Player();
+
+        this.CCWrotationButton = new CCWButton(new Vector2(0,0));
+        this.CWrotationButton = new CWButton(new Vector2(140, 0));
 
         this.player.x = window.innerWidth / 2;
         this.player.y = window.innerHeight - this.player.height / 3;
 
         this.background.initPlayerMovement(this.player);
 
-        this.addChild(this.background, this.player);
+        this.addChild(this.background, this.player, this.CWrotationButton, this.CCWrotationButton);
+
         const combination = CombinationGenerator.getRandomCombination();
         if(!combination) return;
         const processor = new VaultDoorProcessor(combination, true);
 
-        combination.forEach(command => {
-            for (let i = 0; i < command.amount; i++) {
-                processor.pushDirection(command.direction);
-            }
-        });
+        this.CWrotationButton.onPressed = (direction: DoorDirection) => processor.pushDirection(direction);
+        this.CCWrotationButton.onPressed = (direction: DoorDirection) => processor.pushDirection(direction);
+        Debug.log("Combination:", combination);
     }
 
     async start() {
