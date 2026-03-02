@@ -8,3 +8,5 @@ type Entries<T> = {
 
 
 enum DoorState { Closed, Opened };
+enum DoorDirection {CW, CCW};
+type DoorCommand = {direction: DoorDirection, amount: number};
