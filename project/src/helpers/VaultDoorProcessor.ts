@@ -7,7 +7,7 @@ export class VaultDoorProcessor{
     combination: Combination;
     debug: boolean;
 
-    public onDoorStateChanged?: (state: DoorState) => void;
+    public onStateChanged?: (state: DoorState) => void;
     public onCommandSolved?: () => void;
     public onCommandInProgress?: () => void;
     public onCommandFailed?: () => void;
@@ -21,9 +21,16 @@ export class VaultDoorProcessor{
     }
 
     public setCombination(commands: DoorCommand[]) {
-        this.combination.setCommands(commands);
+        if (this.state !== DoorState.Opened) this.combination.setCommands(commands);
     }
 
+    public setState(state: DoorState) 
+    { 
+        this.state = DoorState.Opened;
+        this.state = state;
+        this.onStateChanged?.(this.state);
+    }
+    
     private onDirectionPushedResultHandler(result: CommandPushResult){
         switch (result) {
             case CommandPushResult.Solved:
@@ -48,13 +55,19 @@ export class VaultDoorProcessor{
     }
 
     private onCombinationSolvedHandler() {
-        this.state = DoorState.Opened;
         if(this.debug) Debug.log("Door opened!");
-        this.onDoorStateChanged?.(this.state);
     }
 
     public pushDirection(direction: DoorDirection) {
-        this.combination.pushDirection(direction);
+        switch(this.state){
+            case DoorState.Closed:
+                this.combination.pushDirection(direction);
+                break;
+            case DoorState.Opened:
+                break;
+            default:
+                if (this.debug) Debug.warn("No such state:", this.state);
+        }
     }
     
 }

@@ -2,18 +2,16 @@ import { Debug } from "../utils/debug";
 import { CommandPushResult, DoorCommand, DoorDirection } from "../utils/types/vaultRegistries";
 
 export class Combination{
-    commands: DoorCommand[];
-    currentIndex: number;
-    currentAmount: number;
+    commands!: DoorCommand[];
+    currentIndex!: number;
+    currentAmount!: number;
     debug: boolean;
 
     onDirectionPushedResult?: (result: CommandPushResult) => void;
     onCombinationSolved?: () => void;
 
     constructor(commands: DoorCommand[] = [], debug: boolean = false){
-        this.commands = commands;
-        this.currentIndex = 0;
-        this.currentAmount = 0;
+        this.setCommands(commands);
         this.debug = debug;
     }
 

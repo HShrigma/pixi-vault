@@ -7,3 +7,9 @@ export enum CommandPushResult{
     Failed,
     InProgress,
 };
+
+export enum VaultState {
+    Closed,
+    Spinout,
+    Opened,
+};
