@@ -1,5 +1,5 @@
 import { Debug } from "../utils/debug";
-import { DoorCommand, DoorDirection, DoorState } from "../utils/types/vaultRegistries";
+import { CommandPushResult, DoorCommand, DoorDirection, DoorState } from "../utils/types/vaultRegistries";
 import { Combination } from "./Combination";
 
 export class VaultDoorProcessor{
@@ -9,24 +9,42 @@ export class VaultDoorProcessor{
 
     public onDoorStateChanged?: (state: DoorState) => void;
     public onCommandSolved?: () => void;
-    public onCommandUnsolved?: () => void;
+    public onCommandInProgress?: () => void;
+    public onCommandFailed?: () => void;
 
-    constructor(commands: DoorCommand[], debug: boolean = false) {
+    constructor(commands: DoorCommand[] = [], debug: boolean = false) {
         this.state = DoorState.Closed;
         this.debug = debug;
         this.combination = new Combination(commands);
-        this.combination.onDirectionPushedResult = (success: boolean) => this.onDirectionPushedResultHandler(success);
+        this.combination.onDirectionPushedResult = (result: CommandPushResult) => this.onDirectionPushedResultHandler(result);
         this.combination.onCombinationSolved = () => this.onCombinationSolvedHandler();
     }
 
-    private onDirectionPushedResultHandler(result: boolean){
+    public setCombination(commands: DoorCommand[]) {
+        this.combination.setCommands(commands);
+    }
+
+    private onDirectionPushedResultHandler(result: CommandPushResult){
+        switch (result) {
+            case CommandPushResult.Solved:
+                if (this.debug) Debug.log("Command was solved.");
+                this.onCommandSolved?.();
+                break;
+            case CommandPushResult.InProgress:
+                if (this.debug) Debug.log("Command not solved yet.");
+                this.onCommandInProgress?.();
+                break;
+            case CommandPushResult.Failed:
+                if (this.debug) Debug.log("Command failed. Wrong direction.");
+                this.onCommandFailed?.();
+                break;
+            default:
+                if (this.debug) Debug.warn("Unknown CommandPushResult:", result);
+                break;
+        }
         if(result){
-            if(this.debug) Debug.log("Command was solved.");
-            this.onCommandSolved?.();
             return;
         }
-        if (this.debug) Debug.log("Command not solved yet.");
-        this.onCommandUnsolved?.();
     }
 
     private onCombinationSolvedHandler() {

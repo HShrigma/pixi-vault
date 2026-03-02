@@ -3,11 +3,11 @@ import ParallaxBackground from "../prefabs/ParallaxBackground";
 import { Player } from "../prefabs/Player";
 import Scene from "../core/Scene";
 import SpineAnimation from "../core/SpineAnimation";
-import { Debug } from "../utils/debug";
-import { CombinationGenerator } from "../utils/combinationGenerator";
 import { VaultDoorProcessor } from "../helpers/VaultDoorProcessor";
 import { CommandInterpreter } from "../utils/commandInterpreter";
 import { DoorDirection } from "../utils/types/vaultRegistries";
+import { CombinationGenerator } from "../utils/combinationGenerator";
+import { Debug } from "../utils/debug";
 
 export default class Game extends Scene {
     name = "Game";
@@ -25,9 +25,7 @@ export default class Game extends Scene {
         this.background.initPlayerMovement(this.player);
 
         this.addChild(this.background, this.player);
-        const input = prompt("Enter Commands:");
-        if(!input) return;
-        const combination = CommandInterpreter.parseCommands(input);
+        const combination = CombinationGenerator.getRandomCombination();
         if(!combination) return;
         const processor = new VaultDoorProcessor(combination);
 
