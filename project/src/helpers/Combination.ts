@@ -1,3 +1,4 @@
+import { Debug } from "../utils/debug";
 import { DoorCommand, DoorDirection } from "../utils/types/vaultRegistries";
 
 export class Combination{
@@ -27,15 +28,19 @@ export class Combination{
     public pushDirection(direction: DoorDirection){
         let command = this.getCurrentCommandRequired();
         if(!command) return;
+        Debug.log("Direction:", direction);
+        Debug.log("Index:", this.currentIndex);
+        Debug.log("Amount:", this.currentAmount);
         this.currentAmount += direction === command.direction ? 1 : -1;
 
         const result = this.currentAmount >= command.amount;
         if (result) this.solveCommand();
+        this.onDirectionPushedResult?.(result);
 
         if (this.currentIndex === this.commands.length){
             this.onCombinationSolved?.();
+
         }
 
-        this.onDirectionPushedResult?.(result);
     }
 }
