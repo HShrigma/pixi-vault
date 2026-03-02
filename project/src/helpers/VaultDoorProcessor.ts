@@ -1,4 +1,4 @@
-import { DoorCommand, DoorState } from "../utils/types/vaultRegistries";
+import { DoorCommand, DoorDirection, DoorState } from "../utils/types/vaultRegistries";
 import { Combination } from "./Combination";
 
 export class VaultDoorProcessor{
@@ -6,26 +6,27 @@ export class VaultDoorProcessor{
     combination: Combination;
 
     public onDoorStateChanged?: (state: DoorState) => void;
-    public onCommandSucceeded?: () => void;
-    public onCommandFailed?: () => void;
+    public onCommandSolved?: () => void;
+    public onCommandUnsolved?: () => void;
 
     constructor(commands: DoorCommand[]){
         this.state = DoorState.Closed;
         this.combination = new Combination(commands);
-        this.combination.onCommandPushedResult = (success: boolean) => this.onCommandPushedResultHandler(success);
+        this.combination.onDirectionPushedResult = (success: boolean) => this.onDirectionPushedResultHandler(success);
         this.combination.onCombinationSolved = () => this.onCombinationSolvedHandler();
     }
 
-    public pushCommand(command: DoorCommand) {
-        if(this.state === DoorState.Opened) return;
-        this.combination.pushCommand(command);
+    private onDirectionPushedResultHandler(result: boolean){
+        result ? this.onCommandSolved?.() : this.onCommandUnsolved?.();
     }
 
-    private onCommandPushedResultHandler(result: boolean){
-        result ? this.onCommandSucceeded?.() : this.onCommandFailed?.();
-    }
     private onCombinationSolvedHandler() {
         this.state = DoorState.Opened
         this.onDoorStateChanged?.(this.state);
     }
+
+    public pushDirection(direction: DoorDirection) {
+        this.combination.pushDirection(direction);
+    }
+    
 }

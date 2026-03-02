@@ -1,15 +1,17 @@
-import { DoorCommand } from "../utils/types/vaultRegistries";
+import { DoorCommand, DoorDirection } from "../utils/types/vaultRegistries";
 
 export class Combination{
     commands: DoorCommand[];
     currentIndex: number;
+    currentAmount: number;
 
-    onCommandPushedResult?: (success: boolean) => void;
+    onDirectionPushedResult?: (success: boolean) => void;
     onCombinationSolved?: () => void;
 
     constructor(commands: DoorCommand[]){
         this.commands = commands;
         this.currentIndex = 0;
+        this.currentAmount = 0;
     }
 
     private getCurrentCommandRequired(): DoorCommand | undefined {
@@ -18,17 +20,22 @@ export class Combination{
         return this.commands[this.currentIndex];
     }
 
-    private isCommandCorrect(command: DoorCommand): boolean {
-        const currentCombination = this.getCurrentCommandRequired();
-        if(!currentCombination) return false;
-        return currentCombination.amount === command.amount && currentCombination.direction === command.direction
-    }
-
-    public pushCommand(command: DoorCommand) {
-        const result = this.isCommandCorrect(command);
-        this.onCommandPushedResult?.(result);
-        if(!result) return;
+    private solveCommand(){
         this.currentIndex++;
-        if (this.currentIndex >= this.commands.length) this.onCombinationSolved?.();
+        this.currentAmount = 0;
+    }
+    public pushDirection(direction: DoorDirection){
+        let command = this.getCurrentCommandRequired();
+        if(!command) return;
+        this.currentAmount += direction === command.direction ? 1 : -1;
+
+        const result = this.currentAmount >= command.amount;
+        if (result) this.solveCommand();
+
+        if (this.currentIndex === this.commands.length){
+            this.onCombinationSolved?.();
+        }
+
+        this.onDirectionPushedResult?.(result);
     }
 }
