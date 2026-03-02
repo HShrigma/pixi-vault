@@ -15,7 +15,7 @@ export class VaultDoorProcessor{
     constructor(commands: DoorCommand[] = [], debug: boolean = false) {
         this.state = DoorState.Closed;
         this.debug = debug;
-        this.combination = new Combination(commands);
+        this.combination = new Combination(commands, debug);
         this.combination.onDirectionPushedResult = (result: CommandPushResult) => this.onDirectionPushedResultHandler(result);
         this.combination.onCombinationSolved = () => this.onCombinationSolvedHandler();
     }
@@ -48,7 +48,8 @@ export class VaultDoorProcessor{
     }
 
     private onCombinationSolvedHandler() {
-        this.state = DoorState.Opened
+        this.state = DoorState.Opened;
+        if(this.debug) Debug.log("Door opened!");
         this.onDoorStateChanged?.(this.state);
     }
 

@@ -4,10 +4,7 @@ import { Player } from "../prefabs/Player";
 import Scene from "../core/Scene";
 import SpineAnimation from "../core/SpineAnimation";
 import { VaultDoorProcessor } from "../helpers/VaultDoorProcessor";
-import { CommandInterpreter } from "../utils/commandInterpreter";
-import { DoorDirection } from "../utils/types/vaultRegistries";
 import { CombinationGenerator } from "../utils/combinationGenerator";
-import { Debug } from "../utils/debug";
 
 export default class Game extends Scene {
     name = "Game";
@@ -27,14 +24,13 @@ export default class Game extends Scene {
         this.addChild(this.background, this.player);
         const combination = CombinationGenerator.getRandomCombination();
         if(!combination) return;
-        const processor = new VaultDoorProcessor(combination);
+        const processor = new VaultDoorProcessor(combination, true);
 
-        processor.pushDirection(DoorDirection.CW);
-        processor.pushDirection(DoorDirection.CW);
-
-        processor.pushDirection(DoorDirection.CCW);
-        processor.pushDirection(DoorDirection.CCW);
-        processor.pushDirection(DoorDirection.CCW);
+        combination.forEach(command => {
+            for (let i = 0; i < command.amount; i++) {
+                processor.pushDirection(command.direction);
+            }
+        });
     }
 
     async start() {
