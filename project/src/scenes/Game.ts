@@ -3,6 +3,8 @@ import ParallaxBackground from "../prefabs/ParallaxBackground";
 import { Player } from "../prefabs/Player";
 import Scene from "../core/Scene";
 import SpineAnimation from "../core/SpineAnimation";
+import { Debug } from "../utils/debug";
+import { CombinationGenerator } from "../utils/combinationGenerator";
 
 export default class Game extends Scene {
   name = "Game";
@@ -20,6 +22,8 @@ export default class Game extends Scene {
     this.background.initPlayerMovement(this.player);
 
     this.addChild(this.background, this.player);
+    
+    Debug.log("Game Loaded", CombinationGenerator.getRandomCommand());
   }
 
   async start() {

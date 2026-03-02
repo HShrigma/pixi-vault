@@ -1,3 +1,4 @@
+import { DoorCommand, DoorState } from "../utils/types/vaultRegistries";
 import { Combination } from "./Combination";
 
 export class VaultDoorProcessor{
