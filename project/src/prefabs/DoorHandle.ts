@@ -19,7 +19,6 @@ export class DoorHandle extends Container {
         this.handleShadow = Sprite.from("/Game/images/door_handle_shadow.png");
         this.handle = Sprite.from("/Game/images/door_handle.png");
 
-
         const sprites = [
             this.handleShadow,
             this.handle,
@@ -54,46 +53,70 @@ export class DoorHandle extends Container {
             gsap.killTweensOf(this);
             this.isSpinning = false;
         }
-        this.spin(DoorDirection.CW,  Math.PI * 2).then( () => 
-            this.spin(DoorDirection.CCW, Math.PI * 2)).then(()=>
-            this.onSpinoutCompleted?.());
+        this.spin(DoorDirection.CW, Math.PI * 2).then(() =>
+            this.spin(DoorDirection.CCW, Math.PI * 2)).then(() =>
+                this.onSpinoutCompleted?.());
     }
 
-    public handleSolved() {
+    public handleSolved() { this.pulse(1.12, 0.2, 2); }
 
-    }
+    public handleProgress() { this.pulse(); }
 
-    public handleProgress() {
+    private pulse(toScale: number = 1.08, pulseDuration: number = 0.1, pulseRepeat: number = 0) {
+        gsap.killTweensOf(this.handle.scale);
+        gsap.killTweensOf(this.handleShadow.scale);
+
+        // reset scale to normal
+        this.handle.scale.set(1);
+        this.handleShadow.scale.set(1);
+
+        const timeline = gsap.timeline({
+            repeat: pulseRepeat,
+            yoyo: true,
+            ease: "power1.inOut"
+        });
+
+        timeline.to([this.handle.scale, this.handleShadow.scale], {
+            x: toScale,
+            y: toScale,
+            duration: pulseDuration,
+        }, 0)
+            .to([this.handle.scale, this.handleShadow.scale], {
+                x: 1,
+                y: 1,
+                duration: pulseDuration,
+            }, 0.2);
+
     }
 
     public spin(direction: DoorDirection, rotationAmount: number = Math.PI / 3, duration: number = 0.3): Promise<void> {
-    return new Promise((resolve) => {
-        if (this.isSpinning) {
-            resolve(); // Resolve immediately if already spinning
-            return;
-        }
-        
-        const targetRotation = direction === DoorDirection.CW
-            ? this.currentRotation + rotationAmount
-            : this.currentRotation - rotationAmount;
-        this.isSpinning = true;
-
-        const timeline = gsap.timeline({
-            onUpdate: () => {
-                this.handle.rotation = this.currentRotation;
-                this.handleShadow.rotation = this.currentRotation;
-            },
-            onComplete: () => {
-                this.isSpinning = false;
-                resolve();
+        return new Promise((resolve) => {
+            if (this.isSpinning) {
+                resolve(); // Resolve immediately if already spinning
+                return;
             }
+
+            const targetRotation = direction === DoorDirection.CW
+                ? this.currentRotation + rotationAmount
+                : this.currentRotation - rotationAmount;
+            this.isSpinning = true;
+
+            const timeline = gsap.timeline({
+                onUpdate: () => {
+                    this.handle.rotation = this.currentRotation;
+                    this.handleShadow.rotation = this.currentRotation;
+                },
+                onComplete: () => {
+                    this.isSpinning = false;
+                    resolve();
+                }
+            });
+
+            timeline.to(this, {
+                currentRotation: targetRotation,
+                duration: duration,
+                ease: "power2.out"
+            });
         });
-        
-        timeline.to(this, {
-            currentRotation: targetRotation,
-            duration: duration,
-            ease: "power2.out"
-        });
-    });
-}
+    }
 }
