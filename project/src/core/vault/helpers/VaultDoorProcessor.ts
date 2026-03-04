@@ -56,6 +56,7 @@ export class VaultDoorProcessor{
 
     private onCombinationSolvedHandler() {
         if(this.debug) Debug.log("Door opened!");
+        this.setState(DoorState.Opened);
     }
 
     public pushDirection(direction: DoorDirection) {

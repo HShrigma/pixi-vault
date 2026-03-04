@@ -1,5 +1,4 @@
 import { Container, Sprite, Texture } from "pixi.js";
-import { centerObjects } from "../utils/misc";
 
 export default class Background extends Container {
     name = "Background";

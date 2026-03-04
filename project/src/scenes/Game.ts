@@ -8,6 +8,7 @@ import { CWButton } from "../prefabs/buttons/CWButton";
 import { VaultView } from "../prefabs/VaultView";
 import { VaultStateManager } from "../core/vault/VaultStateManager";
 import { Renderer } from "pixi.js";
+import { DoorHandle } from "../prefabs/DoorHandle";
 
 export default class Game extends Scene {
     name = "Game";
@@ -17,6 +18,7 @@ export default class Game extends Scene {
     private CCWrotationButton!: RotationButton;
     private vault!: VaultView;
     private vaultStateManager!: VaultStateManager;
+    private handle!: DoorHandle;
 
     load() {
         this.background = new Background();
@@ -25,16 +27,20 @@ export default class Game extends Scene {
         this.CWrotationButton = new CWButton(new Vector2(140, 0));
 
         this.vault = new VaultView();
-        this.vaultStateManager = new VaultStateManager();
+        this.vaultStateManager = new VaultStateManager(true,true);
 
         this.CWrotationButton.onPressed = (direction: DoorDirection) => this.vaultStateManager.pushDirection(direction);
         this.CCWrotationButton.onPressed = (direction: DoorDirection) => this.vaultStateManager.pushDirection(direction);
-        this.vaultStateManager.onStateChanged = (state) => {
-            this.vault.setState(state);
-        }
+        this.vaultStateManager.onStateChanged = (state) => this.vault.setState(state);
+        
+        this.handle = new DoorHandle();
+        
+        this.vault.onSpinout = () => this.handle.handleSpinout();
+        this.vault.onOpened = () => this.handle.setOpened();
+        this.vault.onClosed = () => this.handle.setClosed();
 
+        this.vault.addChild(this.handle);
         this.background.addChild(this.vault);
-
         this.addChild(this.background, this.CWrotationButton, this.CCWrotationButton);
     }
 
