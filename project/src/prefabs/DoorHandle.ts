@@ -1,4 +1,4 @@
-import { Container, Sprite} from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 import { Vector2 } from "pixi-spine";
 import { DoorDirection } from "../utils/types/vaultRegistries";
 import gsap from "gsap";
@@ -8,13 +8,14 @@ export class DoorHandle extends Container {
     private handleShadow!: Sprite;
     private currentRotation: number = 0;
     public isSpinning: boolean = false;
+    public onSpinoutCompleted?: () => void;
 
-    constructor(){
+    constructor() {
         super();
         this.init();
     }
 
-    private init(){
+    private init() {
         this.handleShadow = Sprite.from("/Game/images/door_handle_shadow.png");
         this.handle = Sprite.from("/Game/images/door_handle.png");
 
@@ -26,9 +27,9 @@ export class DoorHandle extends Container {
 
         sprites.forEach((sprite) => {
             sprite.anchor.set(0.5);
-            let spritePos:Vector2;
+            let spritePos: Vector2;
             if (sprite === this.handle) spritePos = new Vector2(-10, 0);
-            else spritePos = new Vector2(1,10);
+            else spritePos = new Vector2(1, 10);
             sprite.position.set(spritePos.x, spritePos.y);
             this.addChild(sprite);
         });
@@ -48,40 +49,51 @@ export class DoorHandle extends Container {
     }
 
     public handleSpinout() {
-        this.handle.rotation += 0.2;
-        this.handleShadow.rotation += 0.2;
+        if (this.isSpinning) {
+            // stop spinning
+            gsap.killTweensOf(this);
+            this.isSpinning = false;
+        }
+        this.spin(DoorDirection.CW,  Math.PI * 2).then( () => 
+            this.spin(DoorDirection.CCW, Math.PI * 2)).then(()=>
+            this.onSpinoutCompleted?.());
     }
 
-    public handleSolved ( ){
+    public handleSolved() {
 
     }
 
-    public handleProgress(){
-
+    public handleProgress() {
     }
 
-    public spin(direction: DoorDirection){
-        if(this.isSpinning) return;
-        const rotationAmount = Math.PI / 3; 
-        const targetRotation = direction === DoorDirection.CW 
+    public spin(direction: DoorDirection, rotationAmount: number = Math.PI / 3, duration: number = 0.3): Promise<void> {
+    return new Promise((resolve) => {
+        if (this.isSpinning) {
+            resolve(); // Resolve immediately if already spinning
+            return;
+        }
+        
+        const targetRotation = direction === DoorDirection.CW
             ? this.currentRotation + rotationAmount
             : this.currentRotation - rotationAmount;
         this.isSpinning = true;
 
         const timeline = gsap.timeline({
             onUpdate: () => {
-                // Apply rotation to both handle and shadow
                 this.handle.rotation = this.currentRotation;
                 this.handleShadow.rotation = this.currentRotation;
             },
             onComplete: () => {
                 this.isSpinning = false;
+                resolve();
             }
         });
+        
         timeline.to(this, {
             currentRotation: targetRotation,
-            duration: 0.3,
+            duration: duration,
             ease: "power2.out"
         });
-    }
+    });
+}
 }
