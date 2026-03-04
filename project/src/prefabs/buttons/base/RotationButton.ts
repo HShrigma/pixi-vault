@@ -1,6 +1,7 @@
 import { Color, Container, Graphics, } from "pixi.js";
 import { DoorDirection } from "../../../utils/types/vaultRegistries";
 import { Vector2 } from "pixi-spine";
+import { DoorHandle } from "../../DoorHandle";
 
 export class RotationButton extends Container{
     protected rotationDir: DoorDirection = 0;
@@ -8,9 +9,11 @@ export class RotationButton extends Container{
     protected bg: Graphics;
     protected baseSize = 80; 
     protected padding = 20; 
+    private handle: DoorHandle;
 
-    constructor(position: Vector2){
+    constructor(position: Vector2, handle: DoorHandle){
         super();
+        this.handle = handle;
         this.bg = new Graphics()
             .beginFill(new Color())
             .drawRoundedRect(0, 0, this.baseSize, this.baseSize, 12)
@@ -43,6 +46,7 @@ export class RotationButton extends Container{
     }
 
     private push(){
+        if(this.handle.isSpinning) return;
         this.onPressed?.(this.rotationDir);
     }
 

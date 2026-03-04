@@ -7,7 +7,7 @@ export class DoorHandle extends Container {
     private handle!: Sprite;
     private handleShadow!: Sprite;
     private currentRotation: number = 0;
-    private isSpinning: boolean = false;
+    public isSpinning: boolean = false;
 
     constructor(){
         super();
@@ -53,7 +53,7 @@ export class DoorHandle extends Container {
     }
 
     public handleSolved ( ){
-        
+
     }
 
     public handleProgress(){

@@ -25,13 +25,8 @@ export default class Game extends Scene {
 
     load() {
         this.background = new Background();
-
-        this.CCWrotationButton = new CCWButton(); 
-        this.CWrotationButton = new CWButton();
-
         this.vault = new VaultView();
         this.vaultStateManager = new VaultStateManager(true,true);
-
         this.vaultStateManager.onStateChanged = (state) => this.vault.setState(state);
         
         this.handle = new DoorHandle();
@@ -42,6 +37,9 @@ export default class Game extends Scene {
 
         this.vaultStateManager.onCommandInProgress = () => this.handle.handleProgress();
         this.vaultStateManager.onCommandSolved = () => this.handle.handleSolved();
+
+        this.CCWrotationButton = new CCWButton(this.handle); 
+        this.CWrotationButton = new CWButton(this.handle);
 
         this.CWrotationButton.onPressed = (direction: DoorDirection) => this.handleRotation(direction);
         this.CCWrotationButton.onPressed = (direction: DoorDirection) => this.handleRotation(direction);
