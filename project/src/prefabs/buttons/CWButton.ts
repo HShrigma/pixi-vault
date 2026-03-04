@@ -1,6 +1,6 @@
 import { Vector2 } from "pixi-spine";
-import { RotationButton } from "./RotationButton";
-import { DoorDirection } from "../utils/types/vaultRegistries";
+import { RotationButton } from "./base/RotationButton";
+import { DoorDirection } from "../../utils/types/vaultRegistries";
 
 export class CWButton extends RotationButton{
     constructor(position: Vector2){

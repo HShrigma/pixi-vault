@@ -1,5 +1,5 @@
 import { Color, Container, Graphics, } from "pixi.js";
-import { DoorDirection } from "../utils/types/vaultRegistries";
+import { DoorDirection } from "../../../utils/types/vaultRegistries";
 import { Vector2 } from "pixi-spine";
 
 export class RotationButton extends Container{

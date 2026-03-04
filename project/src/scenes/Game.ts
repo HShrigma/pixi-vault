@@ -1,13 +1,10 @@
-import config from "../config";
 import Background from "../prefabs/Background";
-import { Player } from "../prefabs/Player";
 import Scene from "../core/Scene";
-import SpineAnimation from "../core/SpineAnimation";
-import { RotationButton } from "../prefabs/RotationButton";
+import { RotationButton } from "../prefabs/buttons/base/RotationButton";
 import { DoorDirection } from "../utils/types/vaultRegistries";
 import { Vector2 } from "pixi-spine";
-import { CCWButton } from "../prefabs/CCWButton";
-import { CWButton } from "../prefabs/CWButton";
+import { CCWButton } from "../prefabs/buttons/CCWButton";
+import { CWButton } from "../prefabs/buttons/CWButton";
 import { Vault } from "../prefabs/Vault";
 
 export default class Game extends Scene {
