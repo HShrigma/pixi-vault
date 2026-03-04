@@ -13,7 +13,7 @@ export default class Background extends Container {
     }
 
     init() {
-        const texture = Texture.from("public/Game/images/background.png");
+        const texture = Texture.from("/Game/images/background.png");
         this.sprite = new Sprite(texture);
         this.sprite.anchor.set(0.5);
         this.addChild(this.sprite);

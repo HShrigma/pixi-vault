@@ -2,12 +2,10 @@ import Background from "../prefabs/Background";
 import Scene from "../core/Scene";
 import { RotationButton } from "../prefabs/buttons/base/RotationButton";
 import { DoorDirection } from "../utils/types/vaultRegistries";
-import { Vector2 } from "pixi-spine";
 import { CCWButton } from "../prefabs/buttons/CCWButton";
 import { CWButton } from "../prefabs/buttons/CWButton";
 import { VaultView } from "../prefabs/VaultView";
 import { VaultStateManager } from "../core/vault/VaultStateManager";
-import { Renderer } from "pixi.js";
 import { DoorHandle } from "../prefabs/DoorHandle";
 
 export default class Game extends Scene {
@@ -20,6 +18,11 @@ export default class Game extends Scene {
     private vaultStateManager!: VaultStateManager;
     private handle!: DoorHandle;
 
+    private handleRotation(direction: DoorDirection){
+        this.handle.spin(direction);
+        this.vaultStateManager.pushDirection(direction);
+    }
+
     load() {
         this.background = new Background();
 
@@ -29,8 +32,6 @@ export default class Game extends Scene {
         this.vault = new VaultView();
         this.vaultStateManager = new VaultStateManager(true,true);
 
-        this.CWrotationButton.onPressed = (direction: DoorDirection) => this.vaultStateManager.pushDirection(direction);
-        this.CCWrotationButton.onPressed = (direction: DoorDirection) => this.vaultStateManager.pushDirection(direction);
         this.vaultStateManager.onStateChanged = (state) => this.vault.setState(state);
         
         this.handle = new DoorHandle();
@@ -39,6 +40,12 @@ export default class Game extends Scene {
         this.vault.onOpened = () => this.handle.setOpened();
         this.vault.onClosed = () => this.handle.setClosed();
 
+        this.vaultStateManager.onCommandInProgress = () => this.handle.handleProgress();
+        this.vaultStateManager.onCommandSolved = () => this.handle.handleSolved();
+
+        this.CWrotationButton.onPressed = (direction: DoorDirection) => this.handleRotation(direction);
+        this.CCWrotationButton.onPressed = (direction: DoorDirection) => this.handleRotation(direction);
+        
         this.vault.addChild(this.handle);
         this.background.addChild(this.vault);
         this.addChild(this.background, this.CWrotationButton, this.CCWrotationButton);

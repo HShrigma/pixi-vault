@@ -1,9 +1,13 @@
 import { Container, Sprite} from "pixi.js";
 import { Vector2 } from "pixi-spine";
+import { DoorDirection } from "../utils/types/vaultRegistries";
+import gsap from "gsap";
 
 export class DoorHandle extends Container {
     private handle!: Sprite;
     private handleShadow!: Sprite;
+    private currentRotation: number = 0;
+    private isSpinning: boolean = false;
 
     constructor(){
         super();
@@ -28,6 +32,8 @@ export class DoorHandle extends Container {
             sprite.position.set(spritePos.x, spritePos.y);
             this.addChild(sprite);
         });
+
+        this.currentRotation = this.handle.rotation;
         this.setClosed();
     }
 
@@ -44,5 +50,38 @@ export class DoorHandle extends Container {
     public handleSpinout() {
         this.handle.rotation += 0.2;
         this.handleShadow.rotation += 0.2;
+    }
+
+    public handleSolved ( ){
+        
+    }
+
+    public handleProgress(){
+
+    }
+
+    public spin(direction: DoorDirection){
+        if(this.isSpinning) return;
+        const rotationAmount = Math.PI / 3; 
+        const targetRotation = direction === DoorDirection.CW 
+            ? this.currentRotation + rotationAmount
+            : this.currentRotation - rotationAmount;
+        this.isSpinning = true;
+
+        const timeline = gsap.timeline({
+            onUpdate: () => {
+                // Apply rotation to both handle and shadow
+                this.handle.rotation = this.currentRotation;
+                this.handleShadow.rotation = this.currentRotation;
+            },
+            onComplete: () => {
+                this.isSpinning = false;
+            }
+        });
+        timeline.to(this, {
+            currentRotation: targetRotation,
+            duration: 0.3,
+            ease: "power2.out"
+        });
     }
 }
