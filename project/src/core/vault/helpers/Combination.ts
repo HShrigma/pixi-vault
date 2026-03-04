@@ -1,5 +1,5 @@
-import { Debug } from "../utils/debug";
-import { CommandPushResult, DoorCommand, DoorDirection } from "../utils/types/vaultRegistries";
+import { Debug } from "../../../utils/debug";
+import { CommandPushResult, DoorCommand, DoorDirection } from "../../../utils/types/vaultRegistries";
 
 export class Combination{
     commands!: DoorCommand[];

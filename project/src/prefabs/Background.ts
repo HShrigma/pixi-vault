@@ -1,4 +1,5 @@
 import { Container, Sprite, Texture } from "pixi.js";
+import { centerObjects } from "../utils/misc";
 
 export default class Background extends Container {
     name = "Background";
@@ -7,32 +8,31 @@ export default class Background extends Container {
     constructor() {
         super();
         this.init();
+        this.sprite.texture.baseTexture.once('loaded', () => {
+            this.resize(window.innerWidth, window.innerHeight);
+        });
     }
 
     init() {
-        const texture = Texture.from("/Game/images/background.png");
+        const texture = Texture.from("public/Game/images/background.png");
         this.sprite = new Sprite(texture);
-
         this.sprite.anchor.set(0.5);
-
         this.addChild(this.sprite);
-
-        this.resize(window.innerWidth, window.innerHeight);
     }
 
     resize(width: number, height: number) {
-        const texture = this.sprite.texture;
+        const textureWidth = this.sprite.texture.width;
+        const textureHeight = this.sprite.texture.height;
 
-        const textureRatio = texture.width / texture.height;
-        const screenRatio = width / height;
+        const scale = Math.max(
+            width / textureWidth,
+            height / textureHeight
+        );
 
-        let scale:number;
+        this.scale.set(scale);
 
-        scale = (screenRatio > textureRatio) ?  width / texture.width : height / texture.height;
+        this.position.set(width / 2, height / 2);
 
-        this.sprite.scale.set(scale);
-
-        this.sprite.x = width / 2;
-        this.sprite.y = height / 2;
+        this.sprite.position.set(0, 0);
     }
 }

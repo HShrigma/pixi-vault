@@ -5,7 +5,9 @@ import { DoorDirection } from "../utils/types/vaultRegistries";
 import { Vector2 } from "pixi-spine";
 import { CCWButton } from "../prefabs/buttons/CCWButton";
 import { CWButton } from "../prefabs/buttons/CWButton";
-import { Vault } from "../prefabs/Vault";
+import { VaultView } from "../prefabs/VaultView";
+import { VaultStateManager } from "../core/vault/VaultStateManager";
+import { Renderer } from "pixi.js";
 
 export default class Game extends Scene {
     name = "Game";
@@ -13,20 +15,27 @@ export default class Game extends Scene {
     private background!: Background;
     private CWrotationButton!: RotationButton;
     private CCWrotationButton!: RotationButton;
-    private vault!: Vault;
+    private vault!: VaultView;
+    private vaultStateManager!: VaultStateManager;
 
     load() {
         this.background = new Background();
 
-        this.vault = new Vault();
-
         this.CCWrotationButton = new CCWButton(new Vector2(0,0));
         this.CWrotationButton = new CWButton(new Vector2(140, 0));
 
-        this.CWrotationButton.onPressed = (direction: DoorDirection) => this.vault.pushDirection(direction);
-        this.CCWrotationButton.onPressed = (direction: DoorDirection) => this.vault.pushDirection(direction);
+        this.vault = new VaultView();
+        this.vaultStateManager = new VaultStateManager();
 
-        this.addChild(this.background, this.CWrotationButton, this.CCWrotationButton, this.vault);
+        this.CWrotationButton.onPressed = (direction: DoorDirection) => this.vaultStateManager.pushDirection(direction);
+        this.CCWrotationButton.onPressed = (direction: DoorDirection) => this.vaultStateManager.pushDirection(direction);
+        this.vaultStateManager.onStateChanged = (state) => {
+            this.vault.setState(state);
+        }
+
+        this.background.addChild(this.vault);
+
+        this.addChild(this.background, this.CWrotationButton, this.CCWrotationButton);
     }
 
     async start() {
@@ -47,5 +56,7 @@ export default class Game extends Scene {
 
     onResize(width: number, height: number) {
         if (this.background) this.background.resize(width, height); 
+        // if (this.vault) this.vault.resize(width, height);
+        
     }  
 }
