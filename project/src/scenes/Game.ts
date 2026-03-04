@@ -23,8 +23,8 @@ export default class Game extends Scene {
     load() {
         this.background = new Background();
 
-        this.CCWrotationButton = new CCWButton(new Vector2(0,0));
-        this.CWrotationButton = new CWButton(new Vector2(140, 0));
+        this.CCWrotationButton = new CCWButton(); 
+        this.CWrotationButton = new CWButton();
 
         this.vault = new VaultView();
         this.vaultStateManager = new VaultStateManager(true,true);
@@ -62,7 +62,7 @@ export default class Game extends Scene {
 
     onResize(width: number, height: number) {
         if (this.background) this.background.resize(width, height); 
-        // if (this.vault) this.vault.resize(width, height);
-        
+        if (this.CCWrotationButton) this.CCWrotationButton.resize(width, height);
+        if (this.CWrotationButton) this.CWrotationButton.resize(width, height);
     }  
 }
