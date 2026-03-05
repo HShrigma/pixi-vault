@@ -42,12 +42,12 @@ export class DoorHandle extends Container {
         this.handleShadow.visible = true;
     }
 
-    public setOpened() {
+    public onWin() {
         this.handle.visible = false;
         this.handleShadow.visible = false;
     }
 
-    public handleSpinout() {
+    public onLose() {
         if (this.isSpinning) {
             // stop spinning
             gsap.killTweensOf(this);

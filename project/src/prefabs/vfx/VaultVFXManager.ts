@@ -14,7 +14,7 @@ export class VaultVFXManger extends Container{
         this.addChild(this.counter);
     }
 
-    public handleOpened(){
+    public onWin(){
         this.shineFX.playShines();
         this.counter.setWinText();
     }
@@ -24,7 +24,7 @@ export class VaultVFXManger extends Container{
         this.counter.restartCounter();
     }
 
-    public handleSpinout(){
+    public onLose(){
         this.counter.setLoseText();
     }
 }

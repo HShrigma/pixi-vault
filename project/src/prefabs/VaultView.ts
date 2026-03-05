@@ -40,7 +40,6 @@ export class VaultView extends Container {
     }
 
     public setState(state: VaultState) {
-        console.log("state given:", state);
         switch (state) {
             case VaultState.Closed:
                 this.setClosed();
