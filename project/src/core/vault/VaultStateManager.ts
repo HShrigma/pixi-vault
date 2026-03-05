@@ -19,7 +19,6 @@ export class VaultStateManager{
         this.processor.onCommandFailed = () => this.setState(VaultState.Spinout);
         this.processor.onCommandInProgress = () => this.onCommandInProgress?.();
         this.processor.onCommandSolved = () => this.onCommandSolved?.();
-
         this.debug = debug;
     }
 
@@ -52,6 +51,7 @@ export class VaultStateManager{
 
     private refreshCombination(){
         const combination = CombinationGenerator.getRandomCombination();
+        this.processor.setState(DoorState.Closed);
         this.processor.setCombination(combination);
         if(this.debug) Debug.log("Combination:", CommandInterpreter.commandsToString(combination));
     }
