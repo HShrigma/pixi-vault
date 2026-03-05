@@ -37,6 +37,16 @@ export default class Game extends Scene {
         this.CWrotationButton.onPressed = (direction: DoorDirection) => this.gameManager.handleRotation(direction);
         this.CCWrotationButton.onPressed = (direction: DoorDirection) => this.gameManager.handleRotation(direction);
         
+        this.gameManager.onGameStarted = () => {
+            this.CCWrotationButton.setActive(true);
+            this.CWrotationButton.setActive(true);
+        }
+
+        this.gameManager.onGameFinished = () => {
+            this.CCWrotationButton.setActive(false);
+            this.CWrotationButton.setActive(false);
+        }
+
         this.vault.addChild(this.handle);
         this.vault.addChild(this.vaultVFXManager);
 

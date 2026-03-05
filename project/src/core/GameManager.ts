@@ -12,6 +12,8 @@ export class GameManager{
     private timer: gsap.core.Tween | null = null;
 
     onVaultStateChanged?: (state: VaultState) => void;
+    onGameStarted?:() => void;
+    onGameFinished?:() => void;
 
     constructor(handle:DoorHandle, vfxManager: VaultVFXManger){
         this.handle = handle;
@@ -32,16 +34,19 @@ export class GameManager{
     onStateEnter() {
         switch (this.state) {
             case GameState.Playing:
+                this.onGameStarted?.();
                 this.handle.setClosed();
                 this.vaultVFXManager.handleClosed();
                 this.vaultStateManager.setState(VaultState.Closed);
                 break;
             case GameState.Win:
+                this.onGameFinished?.();
                 this.handle.onWin();
                 this.vaultVFXManager.onWin();
                 this.setPlayingAfterSeconds(5);
                 break;
             case GameState.Lose:
+                this.onGameFinished?.();
                 this.handle.onLose();
                 this.vaultVFXManager.onLose();
                 this.setPlayingAfterSeconds(3);

@@ -59,4 +59,8 @@ export class RotationButton extends Container{
         
         this.scale.set(1);
     }
+
+    public setActive(value: boolean){
+        this.sprite.visible = value;
+    }
 }
