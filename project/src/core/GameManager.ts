@@ -1,3 +1,4 @@
+import { Sound, sound } from "@pixi/sound";
 import { DoorHandle } from "../prefabs/DoorHandle";
 import { VaultVFXManger } from "../prefabs/vfx/VaultVFXManager";
 import { DoorDirection, GameState, VaultState } from "../utils/types/registries";
@@ -5,11 +6,14 @@ import { VaultStateManager } from "./vault/VaultStateManager";
 import { gsap } from "gsap";
 
 export class GameManager{
-    state!: GameState;
-    handle!: DoorHandle;
-    vaultVFXManager!: VaultVFXManger; 
-    vaultStateManager!: VaultStateManager; 
+    private state!: GameState;
+    private handle!: DoorHandle;
+    private vaultVFXManager!: VaultVFXManger; 
+    private vaultStateManager!: VaultStateManager; 
     private timer: gsap.core.Tween | null = null;
+
+    private victorySound!: Sound;
+    private gameOverSound!: Sound;
 
     onVaultStateChanged?: (state: VaultState) => void;
     onGameStarted?:() => void;
@@ -22,6 +26,10 @@ export class GameManager{
         this.vaultStateManager.onStateChanged = (state) => this.onVaultStateChanged?.(state);
         this.vaultStateManager.onCommandInProgress = () => this.handleCommandProgress();
         this.vaultStateManager.onCommandSolved = () =>  this.handleCommandSolved();
+
+        this.victorySound = Sound.from("/Game/sounds/victory.wav");
+        this.gameOverSound = Sound.from("/Game/sounds/game_over.wav");
+
         this.setState(GameState.Playing);
     }
 
@@ -40,12 +48,14 @@ export class GameManager{
                 this.vaultStateManager.setState(VaultState.Closed);
                 break;
             case GameState.Win:
+                this.victorySound.play();
                 this.onGameFinished?.();
                 this.handle.onWin();
                 this.vaultVFXManager.onWin();
                 this.setPlayingAfterSeconds(5);
                 break;
             case GameState.Lose:
+                this.gameOverSound.play();
                 this.onGameFinished?.();
                 this.handle.onLose();
                 this.vaultVFXManager.onLose();
