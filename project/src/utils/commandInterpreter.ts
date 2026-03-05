@@ -19,7 +19,7 @@ const getCommandFromString = (input: string, debug: boolean = false): DoorComman
 
 const parseCommands = (input: string, debug: boolean = false): DoorCommand[] | undefined => {
     const splitInput = input.trim().split(",");
-    let res: DoorCommand[] | undefined = [];
+    let res: DoorCommand[] = [];
     splitInput.forEach(rawCommand => { 
         let command = getCommandFromString(rawCommand);
         if(!command) return;

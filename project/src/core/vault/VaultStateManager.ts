@@ -1,7 +1,6 @@
 import { VaultDoorProcessor } from "./helpers/VaultDoorProcessor";
 import { DoorDirection, DoorState, VaultState } from "../../utils/types/registries";
 import { CombinationGenerator } from "../../utils/combinationGenerator";
-import { Debug } from "../../utils/debug";
 import { CommandInterpreter } from "../../utils/commandInterpreter";
 
 export class VaultStateManager{
@@ -53,6 +52,6 @@ export class VaultStateManager{
         const combination = CombinationGenerator.getRandomCombination();
         this.processor.setState(DoorState.Closed);
         this.processor.setCombination(combination);
-        if(this.debug) Debug.log("Combination:", CommandInterpreter.commandsToString(combination));
+        if(this.debug) console.log("Combination:", CommandInterpreter.commandsToString(combination));
     }
 }

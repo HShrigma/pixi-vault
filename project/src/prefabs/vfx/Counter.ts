@@ -5,7 +5,6 @@ export class Counter extends Container {
     private count: number = 0;
     private textDisplay: Text;
     private counting: boolean = false;
-    private timer: gsap.core.Tween | null = null;
 
     constructor() {
         super();
@@ -67,7 +66,7 @@ export class Counter extends Container {
 
         this.textDisplay.visible = this.textDisplay.visible ? false : true;
 
-        this.timer = gsap.delayedCall(.3, () => {
+        gsap.delayedCall(.3, () => {
             this.scheduleBlink();
         });
     }
@@ -76,8 +75,6 @@ export class Counter extends Container {
 
         this.increment();
 
-        this.timer = gsap.delayedCall(1, () => {
-            this.scheduleNextIncrement();
-        });
+        gsap.delayedCall(1, () => { this.scheduleNextIncrement(); });
     }
 }

@@ -1,4 +1,4 @@
-import { Sound, sound } from "@pixi/sound";
+import { Sound } from "@pixi/sound";
 import { DoorHandle } from "../prefabs/DoorHandle";
 import { VaultVFXManger } from "../prefabs/vfx/VaultVFXManager";
 import { DoorDirection, GameState, VaultState } from "../utils/types/registries";
@@ -10,7 +10,6 @@ export class GameManager{
     private handle!: DoorHandle;
     private vaultVFXManager!: VaultVFXManger; 
     private vaultStateManager!: VaultStateManager; 
-    private timer: gsap.core.Tween | null = null;
 
     private victorySound!: Sound;
     private gameOverSound!: Sound;
@@ -93,7 +92,7 @@ export class GameManager{
     }
 
     private setPlayingAfterSeconds(seconds: number): void {
-        this.timer = gsap.delayedCall(seconds, () => {
+        gsap.delayedCall(seconds, () => {
             this.setState(GameState.Playing);
         });
     }
