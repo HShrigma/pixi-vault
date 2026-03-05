@@ -16,7 +16,6 @@ export class Counter extends Container {
         this.textDisplay.position.set(-443,-37);
 
         this.addChild(this.textDisplay);
-        this.restartCounter();
     }
 
     public increment(): void {

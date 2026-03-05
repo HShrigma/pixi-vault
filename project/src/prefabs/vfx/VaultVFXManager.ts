@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 import { ShineVFX } from "./ShineVFX";
-import { Counter } from "../Counter";
+import { Counter } from "./Counter";
 
 export class VaultVFXManger extends Container{
     shineFX!: ShineVFX;
