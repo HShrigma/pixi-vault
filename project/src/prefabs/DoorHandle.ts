@@ -8,6 +8,7 @@ export class DoorHandle extends Container {
     private handle!: Sprite;
     private handleShadow!: Sprite;
     private turnSound!: Sound;
+    private progressSound!: Sound;
 
     private currentRotation: number = 0;
     public isSpinning: boolean = false;
@@ -22,6 +23,7 @@ export class DoorHandle extends Container {
         this.handleShadow = Sprite.from("/Game/images/door_handle_shadow.png");
         this.handle = Sprite.from("/Game/images/door_handle.png");
         this.turnSound = Sound.from("/Game/sounds/click.mp3");
+        this.progressSound = Sound.from("/Game/sounds/big_click.wav");
 
         const sprites = [
             this.handleShadow,
@@ -44,69 +46,76 @@ export class DoorHandle extends Container {
     public setClosed() {
         this.handle.visible = true;
         this.handleShadow.visible = true;
+        this.turnSound.volume = 1;
+        this.progressSound.volume = 1;
     }
 
     public onWin() {
         this.handle.visible = false;
         this.handleShadow.visible = false;
+        this.turnSound.volume = 0;
+        this.progressSound.volume = 0;
     }
 
-    public onLose() {
+    public async onLose() {
         if (this.isSpinning) {
             // stop spinning
             gsap.killTweensOf(this);
             this.isSpinning = false;
         }
-        this.spin(DoorDirection.CW, Math.PI * 2).then(() =>
-            this.spin(DoorDirection.CCW, Math.PI * 2)).then(() =>
-                this.onSpinoutCompleted?.());
+        await this.spin(DoorDirection.CW, Math.PI * 2);
+        await this.spin(DoorDirection.CCW, Math.PI * 2);
+        this.onSpinoutCompleted?.();
     }
 
-    public handleSolved() { this.pulse(1.12, 0.2, 2); }
+    public async handleSolved() { await this.pulse(true, 1.12, 0.2, 2); }
 
-    public handleProgress() { this.pulse(); }
+    public async handleProgress() { await this.pulse(); }
 
-    private pulse(toScale: number = 1.08, pulseDuration: number = 0.1, pulseRepeat: number = 0) {
-        gsap.killTweensOf(this.handle.scale);
-        gsap.killTweensOf(this.handleShadow.scale);
+    private pulse(hasSound: boolean = false, toScale: number = 1.08, pulseDuration: number = 0.1, pulseRepeat: number = 0): Promise<void> {
+        return new Promise((resolve) => {
+            gsap.killTweensOf(this.handle.scale);
+            gsap.killTweensOf(this.handleShadow.scale);
+            let clicks = 0;
+            this.handle.scale.set(1);
+            this.handleShadow.scale.set(1);
 
-        // reset scale to normal
-        this.handle.scale.set(1);
-        this.handleShadow.scale.set(1);
+            const timeline = gsap.timeline({ repeat: pulseRepeat, yoyo: true, ease: "power1.inOut" });
 
-        const timeline = gsap.timeline({
-            repeat: pulseRepeat,
-            yoyo: true,
-            ease: "power1.inOut"
-        });
-
-        timeline.to([this.handle.scale, this.handleShadow.scale], {
-            x: toScale,
-            y: toScale,
-            duration: pulseDuration,
-        }, 0)
-            .to([this.handle.scale, this.handleShadow.scale], {
-                x: 1,
-                y: 1,
+            timeline.to([this.handle.scale, this.handleShadow.scale], {
+                x: toScale,
+                y: toScale,
                 duration: pulseDuration,
-            }, 0.2);
-
+            })
+                .call(() => {
+                    if (hasSound && clicks !== 0) {
+                        this.progressSound.play();
+                    }
+                    clicks++;
+                })
+                .to([this.handle.scale, this.handleShadow.scale], {
+                    x: 1,
+                    y: 1,
+                    duration: pulseDuration,
+                });
+            timeline.eventCallback("onComplete", resolve);
+        });
     }
 
     public spin(direction: DoorDirection, rotationAmount: number = Math.PI / 3, duration: number = 0.3): Promise<void> {
         return new Promise((resolve) => {
             if (this.isSpinning) {
-                resolve(); // Resolve immediately if already spinning
+                resolve(); // resolve immediately if already spinning
                 return;
             }
-            
+
             const targetRotation = direction === DoorDirection.CW
                 ? this.currentRotation + rotationAmount
                 : this.currentRotation - rotationAmount;
 
             this.isSpinning = true;
             this.turnSound.play();
-            
+
             const timeline = gsap.timeline({
                 onUpdate: () => {
                     this.handle.rotation = this.currentRotation;
