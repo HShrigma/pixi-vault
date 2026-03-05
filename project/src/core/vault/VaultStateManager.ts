@@ -21,7 +21,6 @@ export class VaultStateManager{
         this.processor.onCommandSolved = () => this.onCommandSolved?.();
 
         this.debug = debug;
-        this.setState(VaultState.Closed);
     }
 
     public pushDirection(direction: DoorDirection) {
@@ -32,7 +31,7 @@ export class VaultStateManager{
         if (state === DoorState.Opened) this.setState(VaultState.Opened);
     }
    
-    private setState(state: VaultState){
+    public setState(state: VaultState){
         this.state = state;
         this.handleStateChanged();
         this.onStateChanged?.(this.state);
