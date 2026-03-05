@@ -11,10 +11,10 @@ export class RotationButton extends Container{
     protected padding = 20; 
     private handle: DoorHandle;
 
-    constructor(position: Vector2, handle: DoorHandle){
+    constructor(position: Vector2, handle: DoorHandle, spritePath:string){
         super();
         this.handle = handle;
-        this.sprite = Sprite.from("/Game/images/left-arrow-button-icon.png");
+        this.sprite = Sprite.from(spritePath);
         this.sprite.pivot.set(0.5);
         this.addChild(this.sprite);
 
