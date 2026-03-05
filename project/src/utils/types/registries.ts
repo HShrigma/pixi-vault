@@ -13,3 +13,9 @@ export enum VaultState {
     Spinout,
     Opened,
 };
+
+export enum GameState {
+    Playing,
+    Win,
+    Lose
+}

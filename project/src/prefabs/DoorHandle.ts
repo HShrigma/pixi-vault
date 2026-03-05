@@ -1,6 +1,6 @@
 import { Container, Sprite } from "pixi.js";
 import { Vector2 } from "pixi-spine";
-import { DoorDirection } from "../utils/types/vaultRegistries";
+import { DoorDirection } from "../utils/types/registries";
 import gsap from "gsap";
 
 export class DoorHandle extends Container {

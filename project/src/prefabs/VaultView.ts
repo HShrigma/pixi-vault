@@ -1,5 +1,5 @@
 import { Container, Sprite } from "pixi.js";
-import { VaultState } from "../utils/types/vaultRegistries";
+import { VaultState } from "../utils/types/registries";
 import { Vector2 } from "pixi-spine";
 
 export class VaultView extends Container {

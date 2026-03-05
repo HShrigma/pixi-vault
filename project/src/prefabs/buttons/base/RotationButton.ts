@@ -1,5 +1,5 @@
 import { Color, Container, Graphics, Sprite, } from "pixi.js";
-import { DoorDirection } from "../../../utils/types/vaultRegistries";
+import { DoorDirection } from "../../../utils/types/registries";
 import { Vector2 } from "pixi-spine";
 import { DoorHandle } from "../../DoorHandle";
 

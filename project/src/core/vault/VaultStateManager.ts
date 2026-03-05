@@ -1,5 +1,5 @@
 import { VaultDoorProcessor } from "./helpers/VaultDoorProcessor";
-import { DoorDirection, DoorState, VaultState } from "../../utils/types/vaultRegistries";
+import { DoorDirection, DoorState, VaultState } from "../../utils/types/registries";
 import { CombinationGenerator } from "../../utils/combinationGenerator";
 import { Debug } from "../../utils/debug";
 import { CommandInterpreter } from "../../utils/commandInterpreter";

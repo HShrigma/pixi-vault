@@ -1,4 +1,4 @@
-import { DoorCommand, DoorDirection } from "./types/vaultRegistries";
+import { DoorCommand, DoorDirection } from "./types/registries";
 
 const getRandomCommand = (dir: DoorDirection | undefined): DoorCommand => {
     if (dir === undefined)

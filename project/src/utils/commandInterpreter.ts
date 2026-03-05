@@ -1,5 +1,5 @@
 import { Debug } from "./debug";
-import { DoorCommand, DoorDirection } from "./types/vaultRegistries";
+import { DoorCommand, DoorDirection } from "./types/registries";
 
 const getCommandFromString = (input: string, debug: boolean = false): DoorCommand | undefined => {
     let items = input.toUpperCase().split(' ');
