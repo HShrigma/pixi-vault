@@ -6,7 +6,7 @@ import { DoorHandle } from "../DoorHandle";
 export class CCWButton extends RotationButton{
     constructor(handle: DoorHandle){
         const position = new Vector2(0.4, 0.1);
-        const spritePath = "/Game/images/left-arrow-button-icon.png";
+        const spritePath = "left-arrow-button-icon";
         super(position, handle, spritePath);
         this.normalizedPosition = position;
         this.rotationDir = DoorDirection.CCW;

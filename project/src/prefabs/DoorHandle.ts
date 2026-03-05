@@ -20,8 +20,8 @@ export class DoorHandle extends Container {
     }
 
     private init() {
-        this.handleShadow = Sprite.from("/Game/images/door_handle_shadow.png");
-        this.handle = Sprite.from("/Game/images/door_handle.png");
+        this.handleShadow = Sprite.from("door_handle_shadow");
+        this.handle = Sprite.from("door_handle");
         this.turnSound = Sound.from("/Game/sounds/click.mp3");
         this.progressSound = Sound.from("/Game/sounds/big_click.wav");
 

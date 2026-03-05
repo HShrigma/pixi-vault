@@ -8,16 +8,14 @@ export default class Background extends Container {
     constructor() {
         super();
         this.init();
-        this.sprite.texture.baseTexture.once('loaded', () => {
-            this.resize(window.innerWidth, window.innerHeight);
-        });
     }
 
     init() {
-        const texture = Texture.from("/Game/images/background.png");
+        const texture = Texture.from("background");
         this.sprite = new Sprite(texture);
         this.sprite.anchor.set(0.5);
         this.addChild(this.sprite);
+        this.resize(window.innerWidth,window.innerHeight);
     }
 
     resize(width: number, height: number) {

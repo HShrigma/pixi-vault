@@ -7,7 +7,7 @@ export class Shine extends Container {
 
     constructor(position: Vector2) {
         super();
-        this.shine = Sprite.from("/Game/images/shine.png");
+        this.shine = Sprite.from("shine");
         this.shine.position.set(position.x, position.y);
         this.shine.anchor.set(0.5);
         this.addChild(this.shine);

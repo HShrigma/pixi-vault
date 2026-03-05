@@ -17,9 +17,9 @@ export class VaultView extends Container {
     }
 
     private init() {
-        this.closedDoor = Sprite.from("/Game/images/door_closed.png");
-        this.openDoor = Sprite.from("/Game/images/door_open.png");
-        this.openShadow = Sprite.from("/Game/images/door_open_shadow.png");
+        this.closedDoor = Sprite.from("door_closed");
+        this.openDoor = Sprite.from("door_open");
+        this.openShadow = Sprite.from("door_open_shadow");
 
         const sprites = [
             this.closedDoor,
