@@ -2,10 +2,13 @@ import { Container, Sprite } from "pixi.js";
 import { Vector2 } from "pixi-spine";
 import { DoorDirection } from "../utils/types/registries";
 import gsap from "gsap";
+import { Sound } from "@pixi/sound";
 
 export class DoorHandle extends Container {
     private handle!: Sprite;
     private handleShadow!: Sprite;
+    private turnSound!: Sound;
+
     private currentRotation: number = 0;
     public isSpinning: boolean = false;
     public onSpinoutCompleted?: () => void;
@@ -18,6 +21,7 @@ export class DoorHandle extends Container {
     private init() {
         this.handleShadow = Sprite.from("/Game/images/door_handle_shadow.png");
         this.handle = Sprite.from("/Game/images/door_handle.png");
+        this.turnSound = Sound.from("/Game/sounds/click.mp3");
 
         const sprites = [
             this.handleShadow,
@@ -95,12 +99,14 @@ export class DoorHandle extends Container {
                 resolve(); // Resolve immediately if already spinning
                 return;
             }
-
+            
             const targetRotation = direction === DoorDirection.CW
                 ? this.currentRotation + rotationAmount
                 : this.currentRotation - rotationAmount;
-            this.isSpinning = true;
 
+            this.isSpinning = true;
+            this.turnSound.play();
+            
             const timeline = gsap.timeline({
                 onUpdate: () => {
                     this.handle.rotation = this.currentRotation;
