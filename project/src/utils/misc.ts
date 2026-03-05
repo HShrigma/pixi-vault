@@ -28,3 +28,14 @@ export async function after(
 export function getEntries<T extends object>(obj: T) {
   return Object.entries(obj) as Entries<T>;
 }
+
+export function getRandomNumber(min: number, max: number, integer: boolean = true, inclusive: boolean = true): number {
+  if (integer) {
+    const adjustedMax = inclusive ? max : max - 1;
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(adjustedMax);
+    return Math.floor(Math.random() * (maxFloored - minCeiled + 1)) + minCeiled;
+  } else {
+    return Math.random() * (max - min) + min;
+  }
+}

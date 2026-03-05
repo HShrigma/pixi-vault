@@ -1,14 +1,17 @@
+import { Vector2 } from "pixi-spine";
 import { Container, Sprite } from "pixi.js";
+import { gsap } from "gsap";
 
 export class Shine extends Container {
     private shine!: Sprite;
 
-    constructor() {
+    constructor(position: Vector2) {
         super();
         this.shine = Sprite.from("/Game/images/shine.png");
-        this.shine.position.set(0,0);
+        this.shine.position.set(position.x, position.y);
         this.shine.anchor.set(0.5);
         this.addChild(this.shine);
+        this.setClosed();
     }
 
     public setClosed() {

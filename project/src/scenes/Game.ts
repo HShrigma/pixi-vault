@@ -7,6 +7,7 @@ import { CWButton } from "../prefabs/buttons/CWButton";
 import { VaultView } from "../prefabs/VaultView";
 import { VaultStateManager } from "../core/vault/VaultStateManager";
 import { DoorHandle } from "../prefabs/DoorHandle";
+import { VaultVFXManger } from "../prefabs/vfx/VaultVFXManager";
 
 export default class Game extends Scene {
     name = "Game";
@@ -16,11 +17,25 @@ export default class Game extends Scene {
     private CCWrotationButton!: RotationButton;
     private vault!: VaultView;
     private vaultStateManager!: VaultStateManager;
+    private vaultVFXManager!: VaultVFXManger;
+
     private handle!: DoorHandle;
 
     private handleRotation(direction: DoorDirection){
         this.handle.spin(direction);
         this.vaultStateManager.pushDirection(direction);
+    }
+    private handleOpened(){
+        this.handle.setOpened();
+        this.vaultVFXManager.handleOpened();
+    }
+    private handleClosed(){
+        this.handle.setClosed();
+        this.vaultVFXManager.handleClosed();
+    }
+    private handleSpinout(){
+        this.handle.handleSpinout();
+        this.vaultVFXManager.handleSpinout();
     }
 
     load() {
@@ -28,12 +43,13 @@ export default class Game extends Scene {
         this.vault = new VaultView();
         this.vaultStateManager = new VaultStateManager(true,true);
         this.vaultStateManager.onStateChanged = (state) => this.vault.setState(state);
+        this.vaultVFXManager = new VaultVFXManger();
         
         this.handle = new DoorHandle();
         
-        this.vault.onSpinout = () => this.handle.handleSpinout();
-        this.vault.onOpened = () => this.handle.setOpened();
-        this.vault.onClosed = () => this.handle.setClosed();
+        this.vault.onSpinout = () => this.handleSpinout();
+        this.vault.onOpened = () => this.handleOpened();
+        this.vault.onClosed = () => this.handleClosed();
 
         this.vaultStateManager.onCommandInProgress = () => this.handle.handleProgress();
         this.vaultStateManager.onCommandSolved = () => this.handle.handleSolved();
@@ -45,6 +61,8 @@ export default class Game extends Scene {
         this.CCWrotationButton.onPressed = (direction: DoorDirection) => this.handleRotation(direction);
         
         this.vault.addChild(this.handle);
+        this.vault.addChild(this.vaultVFXManager);
+
         this.background.addChild(this.vault);
         this.addChild(this.background, this.CWrotationButton, this.CCWrotationButton);
     }
